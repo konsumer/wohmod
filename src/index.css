@@ -1,0 +1,61 @@
+@import url("./font/Silver.css");
+
+body {
+  margin: 0;
+  padding: 2em;
+}
+
+body, input, button {
+  background: black;
+  color: white;
+  font-family: Silver;
+  font-size: 24px;
+}
+
+input {
+  width: 100%;
+}
+
+h1 {
+  margin:0;
+}
+
+.tabs, .field {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tabs > * {
+  border: 1px solid white;
+  border-bottom: 0;
+}
+
+.tabs > .active {
+  background: white;
+  color: black;
+}
+
+.tab-content {
+  border: 1px solid white;
+  padding: 10px;
+}
+
+label {
+  width: 120px;
+  text-align: right;
+}
+
+input, button, .tabs > * {
+  border: 1px solid white;
+  padding: 8px;
+  padding-bottom: 0;
+}
+
+.field, button {
+  margin-top: 1em;
+}
+
+button, .tabs > * {
+  cursor: pointer;
+}

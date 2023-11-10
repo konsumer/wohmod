@@ -1,0 +1,25 @@
+[enemy]
+name="KANA WITH BACKGROUND"
+subtitle="has subtitle"
+type="human"
+location="downtown"
+author="panstasz"
+
+intro="intro"
+can_run="1"
+health="10"
+power="20"
+
+damagevalue="1"
+damagetype="STA"
+
+exp="13"
+prize_type="item"
+prize_name="STEAK KNIFE"
+
+hit01="KANA attacks you!"
+hit02="KANA attacks you!"
+hit03="KANA attacks you!"
+art01="enemy_art/kana01.png"
+art02="enemy_art/kana02.png"
+artfreq="20"

@@ -1,0 +1,28 @@
+[event]
+name="CRIME SCENE"
+location="village"
+author="panstasz"
+contact="<@!213271104356089858>"
+flavor="Walking on a beach, you are stopped by a tired-looking policeman.#'It's a crime scene.' he explains.#'Move along.'"
+options="2"
+
+image="example art/policeman_seaside.png"
+about="You encounter a crime scene."
+
+optiona="try to peek over his shoulder"
+testa="perception"
+successa="Peeking over his shoulder, you notice bloody remains of a furry animal of sorts.##But... animals don't wear clothes..."
+winprizea="experience"
+winnumbera="10"
+failurea="You try to peek over his shoulder but don't see anything. What could have happened there?"
+failprizea="reason"
+failnumbera="-1"
+
+optionb="walk away"
+testb="story"
+successb="You walk away from the potential mystery."
+winprizeb="doom"
+winnumberb="2"
+failureb=""
+failprizeb="stamina"
+failnumberb="-1"
