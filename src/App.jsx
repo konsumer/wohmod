@@ -10,33 +10,39 @@ const { event } = INI.parse(exampleEvent)
 const { enemy } = INI.parse(exampleEnemy)
 const { character } = INI.parse(exampleCharacter)
 
-function toTitleCase(text) {
-  return text.toLowerCase().replace(
-    /(?<!\S)\S/ug, match => match.toUpperCase()
-  );
-}
-
-console.log(Object.keys(character).map(name => `<InputText name='${name}' label='${toTitleCase(name)}' defaultValue={character.${name}} />`).join('\n'))
-
-function InputText({name, label, ...props}) {
+function InputText({name, label, help, ...props}) {
   return (
     <div className="field">
-      <label htmlFor={name}>{label}</label>
-      <input type="text" name={name} {...props} />
+      <div>
+        <label htmlFor={name}>{label}</label>
+        <input type="text" name={name} {...props} />
+      </div>
+      {help && <small>{help}</small>}
     </div>
   )
 }
 
-function InputSelect({name, label, options, ...props}) {
+function InputSelect({name, label, options, help, ...props}) {
   return (
     <div className="field">
-      <label htmlFor={name}>{label}</label>
-      <select type="text" name={name} {...props}>
-        {options.map((o, i) => (<option key={i}>{o}</option>))}
-      </select>
+      <div>
+        <label htmlFor={name}>{label}</label>
+        <select type="text" name={name} {...props}>
+          {options.map((o, i) => (<option key={i}>{o}</option>))}
+        </select>
+      </div>
+      {help && <small>{help}</small>}
     </div>
   )
 }
+
+
+/*
+about - tiny text explaining the event, seen in the main menu when you hover over it (string, keep it short)
+flavor - the initial text describing the event (string, it auto-wraps but add # for a new line)
+location - which deck does the event appear in (string, use these: downtown, school, hospital, seaside, forest, mansion, village, apartment, ithotu, athyola, gozu, atorasu)
+options - how many options are available for the player (string, "1", "2" or "3")
+*/
 
 function App() {
   const [tab, setTab] = useState('event')
@@ -54,10 +60,10 @@ function App() {
       
       {tab === 'event' && (
         <form className="tab-content">
-          <InputText name='name' label='Name' defaultValue={event.name} />
-          <InputSelect name='location' label='Location' defaultValue={event.location} options={lists.locations} />
-          <InputText name='author' label='Author' defaultValue={event.author} />
-          <InputText name='contact' label='Contact' defaultValue={event.contact} />
+          <InputText name='name' label='Name' defaultValue={event.name} help="Event's displayed name."/>
+          <InputSelect name='location' label='Location' defaultValue={event.location} options={lists.locations} help='Location where this event might show up.' />
+          <InputText name='author' label='Author' defaultValue={event.author} help='Visible to user, in the "by <author>" section.' />
+          <InputText name='contact' label='Contact' defaultValue={event.contact} help='Not visible to user, used so developers can contact you about it.' />
           <InputText name='flavor' label='Flavor' defaultValue={event.flavor} />
           <InputText name='options' label='Options' defaultValue={event.options} />
           <InputText name='image' label='Image' defaultValue={event.image} />
