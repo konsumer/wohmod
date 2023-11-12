@@ -1,66 +1,22 @@
-@import url("./font/Silver.css");
+@font-face {
+  font-family: 'Silver';
+  src: url('./silver.ttf');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-  margin: 0;
-  padding: 2em;
+ background-image: url("./bg.png");
 }
 
-body, input, button, select {
-  background: black;
-  color: white;
+* {
+  border-color: silver;
   font-family: Silver;
-  font-size: 24px;
+  border-style: solid;
 }
 
-input, select {
-  width: 100%;
-}
-
-h1 {
-  margin:0;
-}
-
-small {
-  display: block;
-  text-align: center;
-}
-
-.tabs, .field > div {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.tabs > * {
-  border: 1px solid white;
-  border-bottom: 0;
-}
-
-.tabs > .active {
-  background: white;
-  color: black;
-}
-
-.tab-content {
-  border: 1px solid white;
-  padding: 10px;
-}
-
-label {
-  width: 120px;
-  text-align: right;
-}
-
-input, button, select, .tabs > * {
-  border: 1px solid white;
-  padding: 8px;
-  padding-bottom: 0;
-}
-
-.field, button {
-  margin-top: 1em;
-}
-
-button, .tabs > * {
-  cursor: pointer;
+input, optgroup, select, textarea {
+  font-family: Silver;
 }

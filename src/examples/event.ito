@@ -4,10 +4,10 @@ location="village"
 author="panstasz"
 contact="<@!213271104356089858>"
 flavor="Walking on a beach, you are stopped by a tired-looking policeman.#'It's a crime scene.' he explains.#'Move along.'"
-options="2"
-
 image="example art/policeman_seaside.png"
 about="You encounter a crime scene."
+
+options="2"
 
 optiona="try to peek over his shoulder"
 testa="perception"
