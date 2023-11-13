@@ -92,6 +92,8 @@ export default function App () {
         o[currentOption][field.replace('prize', 'number')] = lists.items[0]
       } else if (e.target.value === 'spell') {
         o[currentOption][field.replace('prize', 'number')] = lists.spells[0]
+      } else if (e.target.value === 'itempool') {
+        o[currentOption][field.replace('prize', 'number')] = lists.itemPools[0]
       } else {
         o[currentOption][field.replace('prize', 'number')] = 0
       }
@@ -248,7 +250,7 @@ export default function App () {
                     <span className="label-text">Prize</span>
                   </label>
                   <div className="flex gap-2">
-                    {!['injury', 'curse', 'ally', 'item', 'none', 'spell'].includes(options[currentOption].winprize) && (
+                    {!['injury', 'curse', 'ally', 'item', 'none', 'spell', 'itempool'].includes(options[currentOption].winprize) && (
                       <input type="number" className="input input-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} />
                     )}
                     <select className="select select-bordered w-full max-w-xs" value={options[currentOption].winprize} onChange={updateOption('winprize')} >
@@ -262,6 +264,11 @@ export default function App () {
                     {options[currentOption].winprize === 'spell' && (
                       <select className="select select-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} >
                         {lists.spells.map(o => <option key={o}>{o}</option>)}
+                      </select>
+                    )}
+                    {options[currentOption].winprize === 'itempool' && (
+                      <select className="select select-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} >
+                        {lists.itemPools.map(o => <option key={o}>{o}</option>)}
                       </select>
                     )}
                   </div>
@@ -285,7 +292,7 @@ export default function App () {
                       <span className="label-text">Prize</span>
                     </label>
                     <div className="flex gap-2">
-                      {!['injury', 'curse', 'ally', 'item', 'none', 'spell'].includes(options[currentOption].failprize) && (
+                      {!['injury', 'curse', 'ally', 'item', 'none', 'spell', 'itempool'].includes(options[currentOption].failprize) && (
                         <input type="number" className="input input-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} />
                       )}
                       <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failprize} onChange={updateOption('failprize')} >
@@ -299,6 +306,11 @@ export default function App () {
                       {options[currentOption].failprize === 'spell' && (
                         <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} >
                           {lists.spells.map(o => <option key={o}>{o}</option>)}
+                        </select>
+                      )}
+                      {options[currentOption].failprize === 'itempool' && (
+                        <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} >
+                          {lists.itemPools.map(o => <option key={o}>{o}</option>)}
                         </select>
                       )}
                     </div>
