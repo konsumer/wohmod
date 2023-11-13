@@ -30,7 +30,9 @@ export default function App () {
         winnumber: parseInt(event[`winnumber${letters[i]}`] || '0'),
         winprize: event[`winprize${letters[i]}`] || 'none',
         failnumber: parseInt(event[`failnumber${letters[i]}`] || '0'),
-        failprize: event[`failprize${letters[i]}`] || 'none'
+        failprize: event[`failprize${letters[i]}`] || 'none',
+        wineffect: event[`wineffect${letters[i]}`] || 'none',
+        faileffect: event[`faileffect${letters[i]}`] || 'none'
       }
     })
     setOptions(o)
@@ -46,7 +48,9 @@ export default function App () {
       winprize: 'none',
       winnumber: 0,
       failprize: 'none',
-      failnumber: 0
+      failnumber: 0,
+      wineffect: 'none',
+      faileffect: 'none'
     }]
     setOptions(o)
     showOptionModal(o.length - 1)()
@@ -108,7 +112,7 @@ export default function App () {
   // turn the current state objects into 
   const handleSave = () => {
     const newEvent = {...event}
-    const fields = ['option', 'success', 'failure', 'test', 'winnumber', 'winprize', 'failnumber', 'failprize']
+    const fields = ['option', 'success', 'failure', 'test', 'winnumber', 'winprize', 'failnumber', 'failprize', 'faileffect', 'wineffect']
 
     // clean up newlines
     for (const field of Object.keys(newEvent)) {
@@ -186,6 +190,21 @@ export default function App () {
               </label>
 
               <label className="label">
+                <span className="label-text">Wavy</span>
+              </label>
+              <div className="flex gap-2 items-center">
+                <input type="checkbox" className="toggle" checked={event.wavy_art === "1"} onClick={e => setEvent({...event, wavy_art: e.target.checked ? "1" : "0"})} />
+                {event.wavy_art === "1" && (
+                  <input className="input input-bordered w-full max-w-xs" type="number" value={event.wavy_speed || 0} onChange={e=>setEvent({...event, wavy_speed: e.target.value})} />
+                )}
+              </div>
+              <label className="label">
+                <span className="label-text-alt">Make the image all wavy.</span>
+              </label>
+
+              
+
+              <label className="label">
                 <span className="label-text">About</span>
               </label>
               <input type="text" placeholder="About" className="input input-bordered w-full max-w-xs" value={event.about} onChange={e=>setEvent({...event, about: e.target.value})} />
@@ -247,6 +266,16 @@ export default function App () {
                   </label>
 
                   <label className="label">
+                    <span className="label-text">Effect</span>
+                  </label>
+                  <select className="select select-bordered w-full max-w-xs" value={options[currentOption].wineffect} onChange={updateOption('wineffect')} >
+                    {lists.visualEffects.map(o => <option key={o}>{o}</option>)}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt">The visual-effect shown on success.</span>
+                  </label>
+
+                  <label className="label">
                     <span className="label-text">Prize</span>
                   </label>
                   <div className="flex gap-2">
@@ -287,6 +316,16 @@ export default function App () {
                     <label className="label">
                       <span className="label-text-alt">The text shown if the test fails.</span>
                     </label>
+
+                  <label className="label">
+                    <span className="label-text">Effect</span>
+                  </label>
+                  <select className="select select-bordered w-full max-w-xs" value={options[currentOption].faileffect} onChange={updateOption('faileffect')} >
+                    {lists.visualEffects.map(o => <option key={o}>{o}</option>)}
+                  </select>
+                  <label className="label">
+                    <span className="label-text-alt">The visual-effect shown on fail.</span>
+                  </label>
 
                     <label className="label">
                       <span className="label-text">Prize</span>
