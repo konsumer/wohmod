@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import cx from 'classnames'
+import lists from './lists.json'
+import templateUrl from './template_event.png'
 
 import examplesText from './examples.ito?raw'
 import * as ITO from './ito'
@@ -21,14 +23,14 @@ export default function App () {
   useEffect(() => {
     const o = new Array(parseInt(event?.options || 1)).fill(0).map((v, i) => {
       return {
-        option: event[`option${letters[i]}`] || '',
-        success: event[`success${letters[i]}`] || '',
-        failure: event[`failure${letters[i]}`] || '',
-        test: event[`test${letters[i]}`] || '',
+        option: event[`option${letters[i]}`] || 'do something',
+        success: event[`success${letters[i]}`] || 'whatever you did, it worked out.',
+        failure: event[`failure${letters[i]}`] || 'whatever you did, it did not work out.',
+        test: event[`test${letters[i]}`] || 'story',
         winnumber: parseInt(event[`winnumber${letters[i]}`] || '0'),
-        winprize: event[`winprize${letters[i]}`] || '',
+        winprize: event[`winprize${letters[i]}`] || 'none',
         failnumber: parseInt(event[`failnumber${letters[i]}`] || '0'),
-        failprize: event[`failprize${letters[i]}`] || ''
+        failprize: event[`failprize${letters[i]}`] || 'none'
       }
     })
     setOptions(o)
@@ -41,9 +43,9 @@ export default function App () {
       success: 'whatever you did, it worked out.',
       failure: 'whatever you did, it did not work out.',
       test: 'story',
-      winprize: '',
+      winprize: 'none',
       winnumber: 0,
-      failprize: '',
+      failprize: 'none',
       failnumber: 0
     }]
     setOptions(o)
@@ -85,11 +87,52 @@ export default function App () {
     const o = [...options]
     o[currentOption][field] = e.target.value
 
-    if (name.includes('prize') && e.target.value === 'item') {
-      o[currentOption][field.replace('prize', 'number')] = ''
+    if (field.includes('prize')) {
+      if (e.target.value === 'item') {
+        o[currentOption][field.replace('prize', 'number')] = lists.items[0]
+      } else if (e.target.value === 'spell') {
+        o[currentOption][field.replace('prize', 'number')] = lists.spells[0]
+      } else {
+        o[currentOption][field.replace('prize', 'number')] = 0
+      }
     }
 
     setOptions(o)
+  }
+
+  // trigger file-load
+  const handleLoad = () => {}
+
+  // turn the current state objects into 
+  const handleSave = () => {
+    const newEvent = {...event}
+    const fields = ['option', 'success', 'failure', 'test', 'winnumber', 'winprize', 'failnumber', 'failprize']
+
+    // clean up newlines
+    for (const field of Object.keys(newEvent)) {
+      newEvent[field] = newEvent[field].replace(/\n/g, '#')
+    }
+
+    // clean all old options
+    for (const l of letters) {
+      for (const f of fields) {
+        delete newEvent[`${f}${l}`]
+      }
+    }
+    for (const i in options) {
+      const l = letters[i]
+      for (const f of fields) {
+        newEvent[`${f}${l}`] = options[i][f].toString()
+      }
+    }
+
+    newEvent.options = options.length.toString()
+
+    const blob = new Blob([ITO.stringify({event: newEvent})], { type: 'text/plain' })
+    const a = document.createElement('a')
+    a.setAttribute('download', `${newEvent.name.replace(/ /g, '_').replace(/[.+=;:!,<>?/\\]/g, '')}.ito`)
+    a.setAttribute('href', window.URL.createObjectURL(blob))
+    a.click()
   }
 
   return (
@@ -133,6 +176,14 @@ export default function App () {
               </label>
 
               <label className="label">
+                <span className="label-text">Image</span>
+              </label>
+              <input type="text" placeholder="example art/policeman_seaside.png" className="input input-bordered w-full max-w-xs" value={event.image} onChange={e=>setEvent({...event, image: e.target.value})} />
+              <label className="label">
+                <span className="label-text-alt">The image to use. You can use <a className='text-primary' href={templateUrl}>this template</a> for size &amp; color.</span>
+              </label>
+
+              <label className="label">
                 <span className="label-text">About</span>
               </label>
               <input type="text" placeholder="About" className="input input-bordered w-full max-w-xs" value={event.about} onChange={e=>setEvent({...event, about: e.target.value})} />
@@ -152,18 +203,7 @@ export default function App () {
                 <span className="label-text">Location</span>
               </label>
               <select className="select select-bordered w-full max-w-xs" value={event.location} onChange={e=>setEvent({...event, location: e.target.value})}>
-                <option>downtown</option>
-                <option>school</option>
-                <option>hospital</option>
-                <option>seaside</option>
-                <option>forest</option>
-                <option>mansion</option>
-                <option>village</option>
-                <option>apartment</option>
-                <option>ithotu</option>
-                <option>athyola</option>
-                <option>gozu</option>
-                <option>atorasu</option>
+                {lists.locations.map(o => <option key={o}>{o}</option>)}
               </select>
               <label className="label">
                 <span className="label-text-alt">Where does this event happen?</span>
@@ -187,22 +227,14 @@ export default function App () {
                 <span className="label-text">Test</span>
               </label>
               <select className="select select-bordered w-full max-w-xs" value={options[currentOption].test} onChange={updateOption('test')} >
-                <option>strength</option>
-                <option>dexterity</option>
-                <option>perception</option>
-                <option>knowledge</option>
-                <option>charisma</option>
-                <option>luck</option>
-                <option>story</option>
-                <option>funds1</option>
-                <option>funds2</option>
+                {lists.checks.map(o => <option key={o}>{o}</option>)}
               </select>
               <label className="label">
                 <span className="label-text-alt">Which stat will be checked if player selects this option? Set to "story" for no test (auto-success.)</span>
               </label>
 
               <div className="flex gap-2">
-                <fieldset className='border p-2 w-1/2'>
+                <fieldset className={cx('border p-2', {'w-1/2': options[currentOption].test !== 'story', 'w-full': options[currentOption].test === 'story'})}>
                   <legend>SUCCESS</legend>
                   <label className="label">
                     <span className="label-text">Text</span>
@@ -216,59 +248,66 @@ export default function App () {
                     <span className="label-text">Prize</span>
                   </label>
                   <div className="flex gap-2">
-                    {!['injury', 'curse', 'ally', 'item'].includes(options[currentOption].winprize) && (
-                      <input type="number" placeholder="do something" className="input input-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} />
+                    {!['injury', 'curse', 'ally', 'item', 'none', 'spell'].includes(options[currentOption].winprize) && (
+                      <input type="number" className="input input-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} />
                     )}
                     <select className="select select-bordered w-full max-w-xs" value={options[currentOption].winprize} onChange={updateOption('winprize')} >
-                      <option>stamina</option>
-                      <option>reason</option>
-                      <option>doom</option>
-                      <option>experience</option>
-                      <option>funds</option>
-                      <option>injury</option>
-                      <option>curse</option>
-                      <option>ally</option>
-                      <option>item</option>
+                      {lists.rewards.map(o => <option key={o}>{o}</option>)}
                     </select>
                     {options[currentOption].winprize === 'item' && (
-                      <input type="text" placeholder="STEAK KNIFE" className="input input-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} />
+                      <select className="select select-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} >
+                        {lists.items.map(o => <option key={o}>{o}</option>)}
+                      </select>
+                    )}
+                    {options[currentOption].winprize === 'spell' && (
+                      <select className="select select-bordered w-full max-w-xs" value={options[currentOption].winnumber} onChange={updateOption('winnumber')} >
+                        {lists.spells.map(o => <option key={o}>{o}</option>)}
+                      </select>
                     )}
                   </div>
                   <label className="label">
                     <span className="label-text-alt">The prize if the test succeeds.</span>
                   </label>
                 </fieldset>
-                <fieldset className='border p-2 w-1/2'>
-                  <legend>FAILURE</legend>
-                  <label className="label">
-                    <span className="label-text">Text</span>
-                  </label>
-                  <textarea className="textarea textarea-bordered" placeholder="you failed!" className="input input-bordered w-full max-w-xs" value={options[currentOption].failure} onChange={updateOption('failure')} />
-                  <label className="label">
-                    <span className="label-text-alt">The text shown if the test fails.</span>
-                  </label>
 
-                  <label className="label">
-                    <span className="label-text">Prize</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input type="number" placeholder="do something" className="input input-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} />
-                    <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failprize} onChange={updateOption('failprize')} >
-                      <option>stamina</option>
-                      <option>reason</option>
-                      <option>doom</option>
-                      <option>experience</option>
-                      <option>funds</option>
-                      <option>injury</option>
-                      <option>curse</option>
-                      <option>ally</option>
-                      <option>item</option>
-                    </select>
-                  </div>
-                  <label className="label">
-                    <span className="label-text-alt">The prize if the test fails.</span>
-                  </label>
-                </fieldset>
+                {options[currentOption].test !== 'story' && (
+                  <fieldset className='border p-2 w-1/2'>
+                    <legend>FAIL</legend>
+                    <label className="label">
+                      <span className="label-text">Text</span>
+                    </label>
+                    <textarea className="textarea textarea-bordered w-full" placeholder="success!" value={options[currentOption].failure} onChange={updateOption('failure')} />
+                    <label className="label">
+                      <span className="label-text-alt">The text shown if the test fails.</span>
+                    </label>
+
+                    <label className="label">
+                      <span className="label-text">Prize</span>
+                    </label>
+                    <div className="flex gap-2">
+                      {!['injury', 'curse', 'ally', 'item', 'none', 'spell'].includes(options[currentOption].failprize) && (
+                        <input type="number" className="input input-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} />
+                      )}
+                      <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failprize} onChange={updateOption('failprize')} >
+                        {lists.rewards.map(o => <option key={o}>{o}</option>)}
+                      </select>
+                      {options[currentOption].failprize === 'item' && (
+                        <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} >
+                          {lists.items.map(o => <option key={o}>{o}</option>)}
+                        </select>
+                      )}
+                      {options[currentOption].failprize === 'spell' && (
+                        <select className="select select-bordered w-full max-w-xs" value={options[currentOption].failnumber} onChange={updateOption('failnumber')} >
+                          {lists.spells.map(o => <option key={o}>{o}</option>)}
+                        </select>
+                      )}
+                    </div>
+                    <label className="label">
+                      <span className="label-text-alt">The prize if the test succeeds.</span>
+                    </label>
+                  </fieldset>
+                )}
+                
               </div>
             </>
           )}
@@ -301,8 +340,8 @@ export default function App () {
         ))}
       </ul>
       <div className='flex gap-2 justify-center mt-2'>
-        <button className="btn btn-primary">Save</button>
-        <button className="btn btn-secondary">Load</button>
+        <button onClick={handleSave} className="btn btn-primary">Save</button>
+        {/* <button onClick={handleLoad} className="btn btn-secondary">Load</button> */}
       </div>
     </div>
   )

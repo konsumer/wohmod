@@ -9,10 +9,10 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "classnames": "^2.3.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "toml": "^3.0.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react-swc": "^3.3.2",
