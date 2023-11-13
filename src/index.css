@@ -1,22 +1,3 @@
-@font-face {
-  font-family: 'Silver';
-  src: url('./silver.ttf');
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
- background-image: url("./bg.png");
-}
-
-* {
-  border-color: silver;
-  font-family: Silver;
-  border-style: solid;
-}
-
-input, optgroup, select, textarea {
-  font-family: Silver;
-}
