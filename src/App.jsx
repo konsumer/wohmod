@@ -17,6 +17,7 @@ export default function App () {
   const [modalContent, setModalContent] = useState('author')
   const [currentOption, setCurrentOption] = useState(0)
   const modal = useRef()
+  const file = useRef();
 
   // this turns flat events into array
   // after this, use options for all the option-stuff
@@ -107,7 +108,23 @@ export default function App () {
   }
 
   // trigger file-load
-  const handleLoad = () => {}
+  const handleLoad = e => {
+    e.preventDefault()
+    file.current.click()
+  }
+
+  const handleFile = e => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      const o = ITO.parse(reader.result)
+      if (o?.event){
+        setEvent(o.event)
+      }
+    }
+
+    reader.readAsText(e.target.files[0])
+  }
 
   // turn the current state objects into 
   const handleSave = () => {
@@ -193,7 +210,7 @@ export default function App () {
                 <span className="label-text">Wavy</span>
               </label>
               <div className="flex gap-2 items-center">
-                <input type="checkbox" className="toggle" checked={event.wavy_art === "1"} onClick={e => setEvent({...event, wavy_art: e.target.checked ? "1" : "0"})} />
+                <input type="checkbox" className="toggle" checked={event.wavy_art === "1"} onChange={e => setEvent({...event, wavy_art: e.target.checked ? "1" : "0"})} />
                 {event.wavy_art === "1" && (
                   <input className="input input-bordered w-full max-w-xs" type="number" value={event.wavy_speed || 0} onChange={e=>setEvent({...event, wavy_speed: e.target.value})} />
                 )}
@@ -392,7 +409,8 @@ export default function App () {
       </ul>
       <div className='flex gap-2 justify-center mt-2'>
         <button onClick={handleSave} className="btn btn-primary">Save</button>
-        {/* <button onClick={handleLoad} className="btn btn-secondary">Load</button> */}
+        <input className='hidden' type="file" ref={file} onChange={handleFile} />
+        <button onClick={handleLoad} className="btn btn-secondary">Upload</button>
       </div>
     </div>
   )
